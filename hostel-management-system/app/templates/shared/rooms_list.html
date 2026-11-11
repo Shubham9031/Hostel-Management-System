@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Rooms - HMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-door-closed me-2" style="color:#008080;"></i>Rooms</h2>
+    {% if current_user.role == 'admin' %}
+    <a href="{{ url_for('rooms.add') }}" class="btn" style="background-color:#008080;color:white;"><i class="bi bi-plus-circle me-1"></i>Add Room</a>
+    {% endif %}
+</div>
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <form id="searchForm" method="GET" class="row g-2 mb-3">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text" style="background-color:#e8f5f5;border-color:#008080;"><i class="bi bi-search" style="color:#008080;"></i></span>
+                    <input type="text" id="searchInput" name="search" class="form-control search-box" placeholder="Search room..." value="{{ search }}">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select name="block" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Blocks</option>
+                    {% for b in all_blocks %}
+                    <option value="{{ b._id|string }}" {% if block_filter == b._id|string %}selected{% endif %}>{{ b.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr><th>#</th><th>Block</th><th>Room No</th><th>Floor</th><th>Type</th><th>Capacity</th><th>Occupied</th><th>Status</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                    {% for r in rooms %}
+                    <tr>
+                        <td>{{ loop.index + (page-1)*10 }}</td>
+                        <td>{{ r.block_name }}</td>
+                        <td>{{ r.room_number }}</td>
+                        <td>{{ r.floor }}</td>
+                        <td><span class="badge" style="background-color:#008080;">{{ r.room_type }}</span></td>
+                        <td>{{ r.capacity }}</td>
+                        <td>{{ r.occupied }}/{{ r.capacity }}</td>
+                        <td>
+                            <span class="badge {% if r.status == 'Available' %}bg-success{% elif r.status == 'Full' %}bg-danger{% else %}bg-warning text-dark{% endif %}">{{ r.status }}</span>
+                        </td>
+                        <td>
+                            {% if current_user.role == 'admin' %}
+                            <a href="{{ url_for('rooms.edit', room_id=r._id|string) }}" class="btn btn-sm btn-outline-primary me-1"><i class="bi bi-pencil"></i></a>
+                            <form method="POST" action="{{ url_for('rooms.delete', room_id=r._id|string) }}" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-danger btn-delete"><i class="bi bi-trash"></i></button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="9" class="text-center text-muted py-4">No rooms found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if total_pages > 1 %}
+        <nav><ul class="pagination justify-content-center">
+            <li class="page-item {% if page==1 %}disabled{% endif %}"><a class="page-link" href="?search={{ search }}&block={{ block_filter }}&page={{ page-1 }}">Prev</a></li>
+            {% for p in range(1,total_pages+1) %}<li class="page-item {% if p==page %}active{% endif %}"><a class="page-link" href="?search={{ search }}&block={{ block_filter }}&page={{ p }}">{{ p }}</a></li>{% endfor %}
+            <li class="page-item {% if page==total_pages %}disabled{% endif %}"><a class="page-link" href="?search={{ search }}&block={{ block_filter }}&page={{ page+1 }}">Next</a></li>
+        </ul></nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+```
+

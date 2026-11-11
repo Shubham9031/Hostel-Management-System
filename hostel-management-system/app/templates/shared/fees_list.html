@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Fees - HMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-currency-rupee me-2" style="color:#008080;"></i>Fee Management</h2>
+    <a href="{{ url_for('fees.add') }}" class="btn" style="background-color:#008080;color:white;"><i class="bi bi-plus-circle me-1"></i>Add Fee</a>
+</div>
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <form id="searchForm" method="GET" class="row g-2 mb-3">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text" style="background-color:#e8f5f5;border-color:#008080;"><i class="bi bi-search" style="color:#008080;"></i></span>
+                    <input type="text" id="searchInput" name="search" class="form-control search-box" placeholder="Search student..." value="{{ search }}">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select name="status" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Status</option>
+                    <option value="Pending" {% if status_filter=='Pending' %}selected{% endif %}>Pending</option>
+                    <option value="Partial" {% if status_filter=='Partial' %}selected{% endif %}>Partial</option>
+                    <option value="Paid" {% if status_filter=='Paid' %}selected{% endif %}>Paid</option>
+                </select>
+            </div>
+        </form>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead><tr><th>#</th><th>Student</th><th>Roll No</th><th>Fee Type</th><th>Amount</th><th>Paid</th><th>Pending</th><th>Due Date</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody>
+                    {% for f in fees %}
+                    <tr>
+                        <td>{{ loop.index + (page-1)*10 }}</td>
+                        <td>{{ f.student_name }}</td>
+                        <td>{{ f.student_roll }}</td>
+                        <td>{{ f.fee_type }}</td>
+                        <td>₹{{ "%.2f"|format(f.amount) }}</td>
+                        <td>₹{{ "%.2f"|format(f.paid_amount) }}</td>
+                        <td>₹{{ "%.2f"|format(f.amount - f.paid_amount) }}</td>
+                        <td>{{ f.due_date }}</td>
+                        <td><span class="badge {% if f.status=='Paid' %}bg-success{% elif f.status=='Partial' %}bg-warning text-dark{% else %}bg-danger{% endif %}">{{ f.status }}</span></td>
+                        <td>
+                            {% if f.status != 'Paid' %}
+                            <a href="{{ url_for('fees.pay', fee_id=f._id|string) }}" class="btn btn-sm" style="background-color:#008080;color:white;">Record Payment</a>
+                            {% else %}
+                            <span class="text-success"><i class="bi bi-check-circle"></i> Paid</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="10" class="text-center text-muted py-4">No fee records found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+```
+

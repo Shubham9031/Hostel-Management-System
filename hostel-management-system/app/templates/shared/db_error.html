@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Database Error{% endblock %}
+{% block auth_content %}
+<div class="min-vh-100 d-flex align-items-center justify-content-center" style="background: #f4f6f8;">
+    <div class="text-center">
+        <div class="mb-4">
+            <i class="bi bi-database-x" style="font-size: 5rem; color: #dc3545;"></i>
+        </div>
+        <h1 class="display-4 fw-bold text-danger">Database Error</h1>
+        <p class="lead text-muted">MongoDB is not running or MONGO_URI is wrong.</p>
+        <p class="text-muted">{{ error }}</p>
+        <div class="alert alert-warning mx-auto" style="max-width: 600px; text-align:left;">
+            <strong>How to fix:</strong>
+            <ol class="mb-0 mt-2">
+                <li>Make sure MongoDB is installed and running</li>
+                <li>Run: <code>mongod --dbpath C:\data\db</code></li>
+                <li>Or use MongoDB Atlas: set MONGO_URI in your .env file</li>
+                <li>Then restart the Flask app</li>
+            </ol>
+        </div>
+        <a href="/" class="btn btn-primary mt-3">Try Again</a>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+<div class="text-center py-5">
+    <i class="bi bi-database-x" style="font-size: 5rem; color: #dc3545;"></i>
+    <h1 class="display-4 fw-bold text-danger mt-3">Database Error</h1>
+    <p class="lead text-muted">MongoDB is not running or MONGO_URI is wrong.</p>
+    <p class="text-muted">{{ error }}</p>
+    <a href="/" class="btn btn-primary mt-3">Try Again</a>
+</div>
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block title %}My Dashboard - HMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0"><i class="bi bi-speedometer2 me-2" style="color:#008080;"></i>My Dashboard</h2>
+    <span class="text-muted">Welcome, {{ current_user.name }}</span>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header fw-semibold" style="background-color:#e8f5f5; color:#008080;">
+                <i class="bi bi-door-closed me-1"></i>My Room
+            </div>
+            <div class="card-body">
+                {% if my_room %}
+                <table class="table table-sm table-borderless mb-0">
+                    <tr><td class="text-muted">Block</td><td><strong>{{ my_block.name if my_block else 'N/A' }}</strong></td></tr>
+                    <tr><td class="text-muted">Room</td><td><strong>{{ my_room.room_number }}</strong></td></tr>
+                    <tr><td class="text-muted">Type</td><td><span class="badge" style="background-color:#008080;">{{ my_room.room_type }}</span></td></tr>
+                    <tr><td class="text-muted">Since</td><td>{{ my_allocation.allocated_at.strftime('%d %b %Y') if my_allocation and my_allocation.allocated_at else 'N/A' }}</td></tr>
+                </table>
+                {% else %}
+                <p class="text-muted text-center py-3"><i class="bi bi-info-circle"></i> No room assigned yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header fw-semibold" style="background-color:#e8f5f5; color:#008080;">
+                <i class="bi bi-currency-rupee me-1"></i>Fee Status
+            </div>
+            <div class="card-body">
+                {% if my_fees %}
+                {% for fee in my_fees %}
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="small">{{ fee.fee_type }}</span>
+                    <span class="badge {% if fee.status == 'Paid' %}bg-success{% elif fee.status == 'Partial' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                        {{ fee.status }}
+                    </span>
+                </div>
+                {% endfor %}
+                {% if pending_fee > 0 %}
+                <div class="alert alert-warning mb-0 mt-2 py-2">
+                    <small><strong>Total Pending: ₹{{ "%.2f"|format(pending_fee) }}</strong></small>
+                </div>
+                {% endif %}
+                {% else %}
+                <p class="text-muted text-center py-3">No fee records found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header fw-semibold" style="background-color:#e8f5f5; color:#008080;">
+                <i class="bi bi-info-circle me-1"></i>Quick Links
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('complaints.add') }}" class="btn btn-sm" style="background-color:#008080; color:white;">
+                        <i class="bi bi-plus-circle me-1"></i>Raise Complaint
+                    </a>
+                    <a href="{{ url_for('leaves.apply') }}" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-calendar-plus me-1"></i>Apply for Leave
+                    </a>
+                    <a href="{{ url_for('mess.menu') }}" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-egg-fried me-1"></i>View Mess Menu
+                    </a>
+                    <a href="{{ url_for('fees.my_fees') }}" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-receipt me-1"></i>My Fees
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header fw-semibold bg-white border-0">
+                <i class="bi bi-chat-left-text me-1" style="color:#008080;"></i>Recent Complaints
+            </div>
+            <div class="card-body p-0">
+                {% if my_complaints %}
+                <div class="list-group list-group-flush">
+                    {% for c in my_complaints %}
+                    <div class="list-group-item">
+                        <div class="d-flex justify-content-between">
+                            <span class="small fw-semibold">{{ c.category }}</span>
+                            <span class="badge {% if c.status == 'Resolved' %}bg-success{% elif c.status == 'In Progress' %}bg-warning text-dark{% else %}bg-danger{% endif %}">{{ c.status }}</span>
+                        </div>
+                        <p class="mb-0 small text-muted">{{ c.description[:60] }}...</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted text-center py-3">No complaints raised.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header fw-semibold bg-white border-0">
+                <i class="bi bi-megaphone me-1" style="color:#008080;"></i>Latest Notices
+            </div>
+            <div class="card-body p-0">
+                {% if notices %}
+                <div class="list-group list-group-flush">
+                    {% for notice in notices %}
+                    <div class="list-group-item">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="mb-1 small fw-semibold">{{ notice.title }}</h6>
+                            <small class="text-muted">{{ notice.created_at.strftime('%d %b') if notice.created_at else '' }}</small>
+                        </div>
+                        <p class="mb-0 text-muted" style="font-size:0.8rem;">{{ notice.content[:80] }}{% if notice.content|length > 80 %}...{% endif %}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted text-center py-3">No notices.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

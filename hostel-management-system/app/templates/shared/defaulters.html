@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Defaulters - HMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-exclamation-triangle me-2" style="color:#008080;"></i>Fee Defaulters</h2>
+    <a href="{{ url_for('reports.defaulters_csv') }}" class="btn btn-outline-secondary"><i class="bi bi-download me-1"></i>Download CSV</a>
+</div>
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead><tr><th>#</th><th>Student</th><th>Roll No</th><th>Fee Type</th><th>Total</th><th>Paid</th><th>Pending</th><th>Due Date</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody>
+                    {% for d in defaulters %}
+                    <tr class="{% if d.status == 'Pending' %}table-danger{% else %}table-warning{% endif %}">
+                        <td>{{ loop.index }}</td>
+                        <td>{{ d.student_name }}</td>
+                        <td>{{ d.student_roll }}</td>
+                        <td>{{ d.fee_type }}</td>
+                        <td>₹{{ "%.2f"|format(d.amount) }}</td>
+                        <td>₹{{ "%.2f"|format(d.paid_amount) }}</td>
+                        <td class="fw-bold text-danger">₹{{ "%.2f"|format(d.overdue) }}</td>
+                        <td>{{ d.due_date }}</td>
+                        <td><span class="badge {% if d.status=='Partial' %}bg-warning text-dark{% else %}bg-danger{% endif %}">{{ d.status }}</span></td>
+                        <td><a href="{{ url_for('fees.pay', fee_id=d._id|string) }}" class="btn btn-sm" style="background-color:#008080;color:white;">Pay</a></td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="10" class="text-center text-muted py-4">No defaulters! All fees are paid.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+```
+

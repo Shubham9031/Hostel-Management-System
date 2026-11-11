@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Add Visitor - HMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-person-badge me-2" style="color:#008080;"></i>Add Visitor Entry</h2>
+    <a href="{{ url_for('visitors.index') }}" class="btn btn-outline-secondary"><i
+            class="bi bi-arrow-left me-1"></i>Back</a>
+</div>
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Visitor Name *</label>
+                        <input type="text" name="visitor_name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Student Visited *</label>
+                        <select name="student_id" class="form-select" required>
+                            <option value="">Select Student</option>
+                            {% for s in students %}
+                            <option value="{{ s._id|string }}">{{ s.name }} ({{ s.roll_number }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Purpose *</label>
+                        <input type="text" name="purpose" class="form-control" required
+                            placeholder="e.g., Personal visit, Delivery">
+                    </div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-6">
+                            <label class="form-label">Visit Date</label>
+                            <input type="date" name="visit_date" class="form-control" value="{{ today }}">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">In Time *</label>
+                            <input type="time" name="in_time" class="form-control" value="{{ now_time }}" required>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn" style="background-color:#008080;color:white;"><i
+                                class="bi bi-check-circle me-1"></i>Record Entry</button>
+                        <a href="{{ url_for('visitors.index') }}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+```

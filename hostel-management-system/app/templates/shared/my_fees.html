@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}My Fees - HMS{% endblock %}
+{% block content %}
+<div class="mb-4">
+    <h2><i class="bi bi-currency-rupee me-2" style="color:#008080;"></i>My Fees</h2>
+</div>
+{% for fee in fees %}
+<div class="card shadow-sm border-0 mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center" style="background-color:#e8f5f5;">
+        <span class="fw-semibold" style="color:#008080;">{{ fee.fee_type }}</span>
+        <span class="badge {% if fee.status=='Paid' %}bg-success{% elif fee.status=='Partial' %}bg-warning text-dark{% else %}bg-danger{% endif %}">{{ fee.status }}</span>
+    </div>
+    <div class="card-body">
+        <div class="row g-2 mb-2">
+            <div class="col-4"><small class="text-muted">Total</small><div>₹{{ "%.2f"|format(fee.amount) }}</div></div>
+            <div class="col-4"><small class="text-muted">Paid</small><div class="text-success">₹{{ "%.2f"|format(fee.paid_amount) }}</div></div>
+            <div class="col-4"><small class="text-muted">Due</small><div class="text-danger">₹{{ "%.2f"|format(fee.amount - fee.paid_amount) }}</div></div>
+        </div>
+        {% if fee.payments %}
+        <details>
+            <summary class="text-muted small">Payment History ({{ fee.payments|length }})</summary>
+            <div class="mt-2">
+                {% for p in fee.payments %}
+                <div class="d-flex justify-content-between border-bottom py-1 small">
+                    <span>{{ p.payment_date }} - {{ p.mode }}</span>
+                    <span class="text-success fw-semibold">₹{{ "%.2f"|format(p.amount) }}</span>
+                    <a href="{{ url_for('fees.receipt', payment_id=p._id|string) }}" class="text-primary"><i class="bi bi-receipt"></i></a>
+                </div>
+                {% endfor %}
+            </div>
+        </details>
+        {% endif %}
+    </div>
+</div>
+{% else %}
+<div class="card shadow-sm border-0"><div class="card-body text-center py-5 text-muted">No fee records found.</div></div>
+{% endfor %}
+{% endblock %}
+```
+

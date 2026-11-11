@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Hostel Management System{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    {% if current_user.is_authenticated %}
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #008080;">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="{{ url_for('dashboard.index') }}">
+                <i class="bi bi-building"></i> HMS
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item me-2">
+                        <span class="badge bg-light text-dark">
+                            <i class="bi bi-person-circle"></i> {{ current_user.name }}
+                            <span class="badge ms-1" style="background-color: #004d4d;">{{ current_user.role|capitalize }}</span>
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.change_password') }}"><i class="bi bi-key"></i></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.logout') }}"><i class="bi bi-box-arrow-right"></i> Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="d-flex">
+        <nav id="sidebar" class="sidebar d-flex flex-column p-3" style="min-height: calc(100vh - 56px); background-color: #f8f9fa; width: 240px; min-width: 240px; border-right: 1px solid #dee2e6;">
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item">
+                    <a href="{{ url_for('dashboard.index') }}" class="nav-link {% if request.endpoint == 'dashboard.index' %}active{% endif %}" style="color: #008080;">
+                        <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                    </a>
+                </li>
+                {% if current_user.role in ['admin', 'warden'] %}
+                <li class="nav-item mt-2">
+                    <small class="text-muted fw-bold text-uppercase" style="font-size: 0.7rem; padding-left: 0.5rem;">Students</small>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('students.index') }}" class="nav-link {% if 'students' in request.endpoint %}active{% endif %}" style="color: #008080;">
+                        <i class="bi bi-people me-2"></i>Students
+                    </a>
+                </li>
+                <li class="nav-item mt-2">
+                    <small class="text-muted fw-bold text-uppercase" style="font-size: 0.7rem; padding-left: 0.5rem;">Rooms</small>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('rooms.blocks') }}" class="nav-link {% if 'blocks' in request.endpoint %}active{% endif %}" style="color: #008080;">
+                        <i class="bi bi-grid me-2"></i>Blocks
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('rooms.index') }}" class="nav-link {% if request.endpoint == 'rooms.index' %}active{% endif %}" style="color: #008080;">
+                        <i class="bi bi-door-closed me-2"></i>Rooms
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('allocations.index') }}" class="nav-link {% if 'allocations' in request.endpoint %}active{% endif %}" style="color: #008080;">
+                        <i class="bi bi-arrow-left-right me-2"></i>Allocations
+                    </a>
+                </li>
+                <li class="nav-item mt-2">
+                    <small class="text-muted fw-bold text-uppercase" style="font-size: 0.7rem; padding-left: 0.5rem;">Finance</small>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('fees.index') }}" class="nav-link {% if 'fees' in request.endpoint %}active{% endif %}" style="color: #008080;">
+                        <i class="bi bi-currency-rupee me-2"></i>Fees
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('fees.defaulters') }}" class="nav-link" style="color: #008080;">
+                        <i class="bi bi-exclamation-triangle me-2"></i>Defaulters
+                    </a>
+                </li>
+                <li class="nav-item mt-2">
+                    <small class="text-muted fw-bold text-uppercase" style="font-size: 0.7rem; padding-left: 0.5rem;">Operations</small>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('mess.menu') }}" class="nav-link {% if 'mess' in request.endpoint %}active{% endif %}" style="color: #008080;">
+                        <i class="bi bi-egg-fried me-2"></i>Mess
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('complaints.index') }}" class="nav-link {% if 'complaints' in request.endpoint %}active{% endif %}" style="color: #008080;">
+                        <i class="bi bi-chat-left-text me-2"></i>Complaints
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('leaves.index') }}" class="nav-link {% if 'leaves' in request.endpoint %}active{% endif %}" style="color: #008080;">
+                        <i class="bi bi-calendar-check me-2"></i>Leave/Outpass
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('visitors.index') }}" class="nav-link {% if 'visitors' in request.endpoint %}active{% endif %}" style="color: #008080;">
+                        <i class="bi bi-person-badge me-2"></i>Visitors
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('notices.index') }}" class="nav-link {% if 'notices' in request.endpoint %}active{% endif %}" style="color: #008080;">
+                        <i class="bi bi-megaphone me-2"></i>Notices
+                    </a>
+                </li>
+                <li class="nav-item mt-2">
+                    <small class="text-muted fw-bold text-uppercase" style="font-size: 0.7rem; padding-left: 0.5rem;">Reports</small>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('reports.index') }}" class="nav-link {% if 'reports' in request.endpoint %}active{% endif %}" style="color: #008080;">
+                        <i class="bi bi-bar-chart me-2"></i>Reports
+                    </a>
+                </li>
+                {% else %}
+                <li class="nav-item mt-2">
+                    <small class="text-muted fw-bold text-uppercase" style="font-size: 0.7rem; padding-left: 0.5rem;">My Info</small>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('fees.my_fees') }}" class="nav-link {% if 'fees' in request.endpoint %}active{% endif %}" style="color: #008080;">
+                        <i class="bi bi-currency-rupee me-2"></i>My Fees
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('mess.menu') }}" class="nav-link {% if 'mess' in request.endpoint %}active{% endif %}" style="color: #008080;">
+                        <i class="bi bi-egg-fried me-2"></i>Mess Menu
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('complaints.index') }}" class="nav-link {% if 'complaints' in request.endpoint %}active{% endif %}" style="color: #008080;">
+                        <i class="bi bi-chat-left-text me-2"></i>My Complaints
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('leaves.index') }}" class="nav-link {% if 'leaves' in request.endpoint %}active{% endif %}" style="color: #008080;">
+                        <i class="bi bi-calendar-check me-2"></i>Leave/Outpass
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('notices.index') }}" class="nav-link {% if 'notices' in request.endpoint %}active{% endif %}" style="color: #008080;">
+                        <i class="bi bi-megaphone me-2"></i>Notices
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        <main class="flex-grow-1 p-4" style="background-color: #f4f6f8; min-height: calc(100vh - 56px);">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="mb-3">
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+    {% else %}
+    {% block auth_content %}{% endblock %}
+    {% endif %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

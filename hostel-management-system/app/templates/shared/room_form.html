@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}{{ action }} Room - HMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-door-closed me-2" style="color:#008080;"></i>{{ action }} Room</h2>
+    <a href="{{ url_for('rooms.index') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Back</a>
+</div>
+<div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+        <form method="POST">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Block *</label>
+                    <select name="block_id" class="form-select" required {% if room %}disabled{% endif %}>
+                        <option value="">Select Block</option>
+                        {% for b in all_blocks %}
+                        <option value="{{ b._id|string }}" {% if room and room.block_id == b._id|string %}selected{% endif %}>{{ b.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Room Number *</label>
+                    <input type="text" name="room_number" class="form-control" value="{{ room.room_number if room else '' }}" required {% if room %}readonly{% endif %}>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Floor</label>
+                    <input type="number" name="floor" class="form-control" value="{{ room.floor if room else 1 }}" min="1">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Room Type</label>
+                    <select name="room_type" class="form-select">
+                        {% for t in ['Single', 'Double', 'Triple'] %}
+                        <option value="{{ t }}" {% if room and room.room_type == t %}selected{% endif %}>{{ t }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Capacity</label>
+                    <input type="number" name="capacity" class="form-control" value="{{ room.capacity if room else 1 }}" min="1" max="10">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        {% for s in ['Available', 'Full', 'Maintenance'] %}
+                        <option value="{{ s }}" {% if room and room.status == s %}selected{% endif %}>{{ s }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Amenities</label>
+                    <input type="text" name="amenities" class="form-control" value="{{ room.amenities if room else '' }}" placeholder="AC, WiFi, etc.">
+                </div>
+            </div>
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn" style="background-color:#008080;color:white;"><i class="bi bi-check-circle me-1"></i>{{ action }} Room</button>
+                <a href="{{ url_for('rooms.index') }}" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+```
+

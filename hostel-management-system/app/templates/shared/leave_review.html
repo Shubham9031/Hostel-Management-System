@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Review Leave - HMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-calendar-check me-2" style="color:#008080;"></i>Review Leave Application</h2>
+    <a href="{{ url_for('leaves.index') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Back</a>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0 mb-3">
+            <div class="card-header fw-semibold" style="background-color:#e8f5f5;color:#008080;">Application Details</div>
+            <div class="card-body">
+                <div class="mb-2"><small class="text-muted">Student</small><div>{{ student.name if student else 'N/A' }} ({{ student.roll_number if student else '' }})</div></div>
+                <div class="mb-2"><small class="text-muted">Type</small><div>{{ leave.leave_type }}</div></div>
+                <div class="mb-2"><small class="text-muted">From</small><div>{{ leave.from_date }}</div></div>
+                <div class="mb-2"><small class="text-muted">To</small><div>{{ leave.to_date }}</div></div>
+                <div><small class="text-muted">Reason</small><div>{{ leave.reason }}</div></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header fw-semibold" style="background-color:#e8f5f5;color:#008080;">Decision</div>
+            <div class="card-body p-4">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select name="status" class="form-select">
+                            {% for s in ['Pending', 'Approved', 'Rejected'] %}
+                            <option value="{{ s }}" {% if leave.status == s %}selected{% endif %}>{{ s }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Remarks</label>
+                        <textarea name="remarks" class="form-control" rows="3">{{ leave.remarks or '' }}</textarea>
+                    </div>
+                    <button type="submit" class="btn" style="background-color:#008080;color:white;"><i class="bi bi-check-circle me-1"></i>Submit Decision</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+```
+

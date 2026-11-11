@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Leave/Outpass - HMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-calendar-check me-2" style="color:#008080;"></i>Leave / Outpass</h2>
+    {% if current_user.role == 'student' %}
+    <a href="{{ url_for('leaves.apply') }}" class="btn" style="background-color:#008080;color:white;"><i class="bi bi-plus-circle me-1"></i>Apply</a>
+    {% endif %}
+</div>
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        {% if current_user.role in ['admin', 'warden'] %}
+        <form id="searchForm" method="GET" class="mb-3">
+            <select name="status" class="form-select" style="max-width:200px;" onchange="this.form.submit()">
+                <option value="">All Status</option>
+                {% for s in ['Pending','Approved','Rejected'] %}
+                <option value="{{ s }}" {% if status_filter==s %}selected{% endif %}>{{ s }}</option>
+                {% endfor %}
+            </select>
+        </form>
+        {% endif %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead><tr>
+                    <th>#</th>
+                    {% if current_user.role in ['admin','warden'] %}<th>Student</th><th>Roll No</th>{% endif %}
+                    <th>Type</th><th>From</th><th>To</th><th>Reason</th><th>Status</th>
+                    {% if current_user.role in ['admin','warden'] %}<th>Actions</th>{% endif %}
+                </tr></thead>
+                <tbody>
+                    {% for lv in leaves %}
+                    <tr>
+                        <td>{{ loop.index + (page-1)*10 }}</td>
+                        {% if current_user.role in ['admin','warden'] %}<td>{{ lv.student_name }}</td><td>{{ lv.student_roll }}</td>{% endif %}
+                        <td><span class="badge bg-secondary">{{ lv.leave_type }}</span></td>
+                        <td>{{ lv.from_date }}</td>
+                        <td>{{ lv.to_date }}</td>
+                        <td>{{ lv.reason[:40] }}{% if lv.reason|length > 40 %}...{% endif %}</td>
+                        <td><span class="badge {% if lv.status=='Approved' %}bg-success{% elif lv.status=='Rejected' %}bg-danger{% else %}bg-warning text-dark{% endif %}">{{ lv.status }}</span></td>
+                        {% if current_user.role in ['admin','warden'] %}
+                        <td><a href="{{ url_for('leaves.review', leave_id=lv._id|string) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-check2-square"></i> Review</a></td>
+                        {% endif %}
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="9" class="text-center text-muted py-4">No leave applications found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+```
+

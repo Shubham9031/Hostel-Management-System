@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Server Error{% endblock %}
+{% block content %}
+<div class="text-center py-5">
+    <i class="bi bi-bug" style="font-size: 5rem; color: #dc3545;"></i>
+    <h1 class="display-1 fw-bold text-danger">500</h1>
+    <p class="lead">An internal server error occurred.</p>
+    <a href="{{ url_for('dashboard.index') }}" class="btn" style="background-color:#008080; color:white;">Go Home</a>
+</div>
+{% endblock %}

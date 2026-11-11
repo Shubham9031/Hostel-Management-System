@@ -1,0 +1,21 @@
+:root {
+    --teal: #008080;
+    --teal-dark: #004d4d;
+    --teal-light: #e8f5f5;
+}
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+.sidebar .nav-link { border-radius: 8px; margin-bottom: 2px; transition: all 0.2s; }
+.sidebar .nav-link:hover { background-color: var(--teal-light); }
+.sidebar .nav-link.active { background-color: var(--teal); color: white !important; }
+.card { border-radius: 12px; }
+.btn-teal { background-color: var(--teal); color: white; border: none; }
+.btn-teal:hover { background-color: var(--teal-dark); color: white; }
+.table th { background-color: var(--teal-light); color: var(--teal-dark); font-weight: 600; }
+.badge-teal { background-color: var(--teal); }
+.search-box { border-color: var(--teal); }
+.search-box:focus { border-color: var(--teal); box-shadow: 0 0 0 0.2rem rgba(0,128,128,.25); }
+.form-control:focus, .form-select:focus { border-color: var(--teal); box-shadow: 0 0 0 0.2rem rgba(0,128,128,.25); }
+.page-link { color: var(--teal); }
+.page-item.active .page-link { background-color: var(--teal); border-color: var(--teal); }
+@media (max-width: 768px) { #sidebar { display: none !important; } }
+.receipt-container { max-width: 600px; margin: 0 auto; }

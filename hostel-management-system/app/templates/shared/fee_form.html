@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}{{ action }} Fee - HMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-currency-rupee me-2" style="color:#008080;"></i>{{ action }} Fee Record</h2>
+    <a href="{{ url_for('fees.index') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Back</a>
+</div>
+<div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+        <form method="POST">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Student *</label>
+                    <select name="student_id" class="form-select" required>
+                        <option value="">Select Student</option>
+                        {% for s in students %}
+                        <option value="{{ s._id|string }}" {% if fee and fee.student_id == s._id|string %}selected{% endif %}>{{ s.name }} ({{ s.roll_number }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Fee Type *</label>
+                    <select name="fee_type" class="form-select" required>
+                        {% for t in ['Hostel Fee', 'Mess Fee', 'Maintenance Fee', 'Electricity Fee', 'Other'] %}
+                        <option value="{{ t }}" {% if fee and fee.fee_type == t %}selected{% endif %}>{{ t }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Amount (₹) *</label>
+                    <input type="number" name="amount" class="form-control" value="{{ fee.amount if fee else '' }}" min="1" step="0.01" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Due Date *</label>
+                    <input type="date" name="due_date" class="form-control" value="{{ fee.due_date if fee else '' }}" required>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Description</label>
+                    <textarea name="description" class="form-control" rows="2">{{ fee.description if fee else '' }}</textarea>
+                </div>
+            </div>
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn" style="background-color:#008080;color:white;"><i class="bi bi-check-circle me-1"></i>{{ action }} Fee</button>
+                <a href="{{ url_for('fees.index') }}" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+```
+

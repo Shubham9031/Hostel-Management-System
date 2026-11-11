@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Complaints - HMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-chat-left-text me-2" style="color:#008080;"></i>Complaints</h2>
+    <a href="{{ url_for('complaints.add') }}" class="btn" style="background-color:#008080;color:white;"><i class="bi bi-plus-circle me-1"></i>Raise Complaint</a>
+</div>
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        {% if current_user.role in ['admin', 'warden'] %}
+        <form id="searchForm" method="GET" class="row g-2 mb-3">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text" style="background-color:#e8f5f5;border-color:#008080;"><i class="bi bi-search" style="color:#008080;"></i></span>
+                    <input type="text" id="searchInput" name="search" class="form-control search-box" placeholder="Search student..." value="{{ search }}">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select name="status" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Status</option>
+                    <option value="Open" {% if status_filter=='Open' %}selected{% endif %}>Open</option>
+                    <option value="In Progress" {% if status_filter=='In Progress' %}selected{% endif %}>In Progress</option>
+                    <option value="Resolved" {% if status_filter=='Resolved' %}selected{% endif %}>Resolved</option>
+                </select>
+            </div>
+        </form>
+        {% endif %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead><tr>
+                    <th>#</th>
+                    {% if current_user.role in ['admin','warden'] %}<th>Student</th>{% endif %}
+                    <th>Category</th><th>Description</th><th>Status</th><th>Date</th>
+                    {% if current_user.role in ['admin','warden'] %}<th>Actions</th>{% endif %}
+                </tr></thead>
+                <tbody>
+                    {% for c in complaints %}
+                    <tr>
+                        <td>{{ loop.index + (page-1)*10 }}</td>
+                        {% if current_user.role in ['admin','warden'] %}<td>{{ c.student_name }}</td>{% endif %}
+                        <td><span class="badge" style="background-color:#008080;">{{ c.category }}</span></td>
+                        <td>{{ c.description[:60] }}{% if c.description|length > 60 %}...{% endif %}</td>
+                        <td><span class="badge {% if c.status=='Resolved' %}bg-success{% elif c.status=='In Progress' %}bg-warning text-dark{% else %}bg-danger{% endif %}">{{ c.status }}</span></td>
+                        <td>{{ c.created_at.strftime('%d %b %Y') if c.created_at else 'N/A' }}</td>
+                        {% if current_user.role in ['admin','warden'] %}
+                        <td><a href="{{ url_for('complaints.update', complaint_id=c._id|string) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i> Update</a></td>
+                        {% endif %}
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="7" class="text-center text-muted py-4">No complaints found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+```
+

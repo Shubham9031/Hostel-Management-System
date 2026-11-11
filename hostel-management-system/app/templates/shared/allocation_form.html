@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Assign Room - HMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-arrow-left-right me-2" style="color:#008080;"></i>Assign Room</h2>
+    <a href="{{ url_for('allocations.index') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Back</a>
+</div>
+<div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label">Student *</label>
+                <select name="student_id" class="form-select" required>
+                    <option value="">Select Unallocated Student</option>
+                    {% for s in students %}
+                    <option value="{{ s._id|string }}">{{ s.name }} ({{ s.roll_number }})</option>
+                    {% endfor %}
+                </select>
+                {% if not students %}<small class="text-muted">All students have been allocated a room.</small>{% endif %}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Room *</label>
+                <select name="room_id" class="form-select" required>
+                    <option value="">Select Available Room</option>
+                    {% for r in rooms %}
+                    <option value="{{ r._id|string }}">{{ r.block_name }} - Room {{ r.room_number }} ({{ r.room_type }}, {{ r.available_beds }} bed(s) left)</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-4">
+                <label class="form-label">Notes</label>
+                <input type="text" name="notes" class="form-control" placeholder="Optional notes">
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn" style="background-color:#008080;color:white;"><i class="bi bi-check-circle me-1"></i>Assign Room</button>
+                <a href="{{ url_for('allocations.index') }}" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+```
+

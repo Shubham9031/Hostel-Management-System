@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Students - HMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-people me-2" style="color:#008080;"></i>Students</h2>
+    <a href="{{ url_for('students.add') }}" class="btn" style="background-color:#008080;color:white;">
+        <i class="bi bi-plus-circle me-1"></i>Add Student
+    </a>
+</div>
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <form id="searchForm" method="GET" class="mb-3">
+            <div class="input-group" style="max-width:350px;">
+                <span class="input-group-text" style="background-color:#e8f5f5; border-color:#008080;">
+                    <i class="bi bi-search" style="color:#008080;"></i>
+                </span>
+                <input type="text" id="searchInput" name="search" class="form-control search-box" placeholder="Search by name, roll no..." value="{{ search }}">
+            </div>
+        </form>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>#</th><th>Name</th><th>Roll No</th><th>Course</th><th>Year</th>
+                        <th>Phone</th><th>Status</th><th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in students %}
+                    <tr>
+                        <td>{{ loop.index + (page-1)*10 }}</td>
+                        <td>
+                            {% if s.photo %}
+                            <img src="{{ url_for('static', filename='uploads/' + s.photo) }}" class="rounded-circle me-2" width="32" height="32" style="object-fit:cover;">
+                            {% else %}
+                            <span class="avatar-placeholder me-2 rounded-circle d-inline-flex align-items-center justify-content-center" style="width:32px;height:32px;background:#e8f5f5;color:#008080;">{{ s.name[0] }}</span>
+                            {% endif %}
+                            {{ s.name }}
+                        </td>
+                        <td>{{ s.roll_number }}</td>
+                        <td>{{ s.course }}</td>
+                        <td>{{ s.year }}</td>
+                        <td>{{ s.phone }}</td>
+                        <td>
+                            <span class="badge {% if s.status == 'Active' %}bg-success{% else %}bg-secondary{% endif %}">{{ s.status }}</span>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('students.view', student_id=s._id|string) }}" class="btn btn-sm btn-outline-info me-1"><i class="bi bi-eye"></i></a>
+                            <a href="{{ url_for('students.edit', student_id=s._id|string) }}" class="btn btn-sm btn-outline-primary me-1"><i class="bi bi-pencil"></i></a>
+                            <form method="POST" action="{{ url_for('students.delete', student_id=s._id|string) }}" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-danger btn-delete"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="8" class="text-center text-muted py-4">No students found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if total_pages > 1 %}
+        <nav>
+            <ul class="pagination justify-content-center">
+                <li class="page-item {% if page == 1 %}disabled{% endif %}">
+                    <a class="page-link" href="?search={{ search }}&page={{ page-1 }}">Previous</a>
+                </li>
+                {% for p in range(1, total_pages+1) %}
+                <li class="page-item {% if p == page %}active{% endif %}">
+                    <a class="page-link" href="?search={{ search }}&page={{ p }}">{{ p }}</a>
+                </li>
+                {% endfor %}
+                <li class="page-item {% if page == total_pages %}disabled{% endif %}">
+                    <a class="page-link" href="?search={{ search }}&page={{ page+1 }}">Next</a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+        <small class="text-muted">Total: {{ total }} students</small>
+    </div>
+</div>
+{% endblock %}
+```
+

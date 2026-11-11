@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Visitors - HMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-person-badge me-2" style="color:#008080;"></i>Visitor Log</h2>
+    <a href="{{ url_for('visitors.add') }}" class="btn" style="background-color:#008080;color:white;"><i class="bi bi-plus-circle me-1"></i>Add Visitor</a>
+</div>
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <form id="searchForm" method="GET" class="row g-2 mb-3">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text" style="background-color:#e8f5f5;border-color:#008080;"><i class="bi bi-search" style="color:#008080;"></i></span>
+                    <input type="text" id="searchInput" name="search" class="form-control search-box" placeholder="Search visitor/student..." value="{{ search }}">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <input type="date" name="date" class="form-control" value="{{ date_filter }}" onchange="this.form.submit()">
+            </div>
+        </form>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead><tr><th>#</th><th>Visitor Name</th><th>Student Visited</th><th>Purpose</th><th>Date</th><th>In Time</th><th>Out Time</th><th>Actions</th></tr></thead>
+                <tbody>
+                    {% for v in visitors %}
+                    <tr>
+                        <td>{{ loop.index + (page-1)*10 }}</td>
+                        <td>{{ v.visitor_name }}</td>
+                        <td>{{ v.student_visited }}</td>
+                        <td>{{ v.purpose }}</td>
+                        <td>{{ v.visit_date }}</td>
+                        <td>{{ v.in_time }}</td>
+                        <td>
+                            {% if v.out_time %}
+                            {{ v.out_time }}
+                            {% else %}
+                            <form method="POST" action="{{ url_for('visitors.update_out', visitor_id=v._id|string) }}" class="d-inline">
+                                <div class="input-group input-group-sm" style="max-width:150px;">
+                                    <input type="time" name="out_time" class="form-control" required>
+                                    <button type="submit" class="btn btn-sm" style="background-color:#008080;color:white;">Set</button>
+                                </div>
+                            </form>
+                            {% endif %}
+                        </td>
+                        <td>-</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="8" class="text-center text-muted py-4">No visitor records.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+```
+

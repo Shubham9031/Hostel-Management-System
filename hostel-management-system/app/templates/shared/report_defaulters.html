@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Defaulters Report - HMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-exclamation-triangle me-2" style="color:#dc3545;"></i>Defaulters Report</h2>
+    <div>
+        <a href="{{ url_for('reports.defaulters_csv') }}" class="btn btn-outline-secondary me-2"><i class="bi bi-download me-1"></i>Download CSV</a>
+        <a href="{{ url_for('reports.index') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Back</a>
+    </div>
+</div>
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead><tr><th>Student</th><th>Roll No</th><th>Phone</th><th>Fee Type</th><th>Total</th><th>Paid</th><th>Pending</th><th>Due Date</th><th>Status</th></tr></thead>
+                <tbody>
+                    {% for d in defaulters %}
+                    <tr class="{% if d.status=='Pending' %}table-danger{% else %}table-warning{% endif %}">
+                        <td>{{ d.student_name }}</td>
+                        <td>{{ d.roll_number }}</td>
+                        <td>{{ d.phone }}</td>
+                        <td>{{ d.fee_type }}</td>
+                        <td>₹{{ "%.2f"|format(d.amount) }}</td>
+                        <td>₹{{ "%.2f"|format(d.paid) }}</td>
+                        <td class="fw-bold">₹{{ "%.2f"|format(d.pending) }}</td>
+                        <td>{{ d.due_date }}</td>
+                        <td><span class="badge {% if d.status=='Partial' %}bg-warning text-dark{% else %}bg-danger{% endif %}">{{ d.status }}</span></td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="9" class="text-center text-muted py-4">No defaulters found!</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+```
+
+After creating all files, post "@coordinator Module templates complete - all 30+ template files created."
